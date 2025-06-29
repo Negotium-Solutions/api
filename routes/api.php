@@ -12,10 +12,12 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
+
+Route::prefix('tenant')->group(function () {
+    Route::get('/create', [TenantController::class, 'create'])->name('tenant.create');
+});
 // Central routes - End
 
 Route::middleware([InitializeTenancyByPath::class, PreventAccessFromCentralDomains::class, 'auth:sanctum'])->group(function () {
-    Route::prefix('tenant')->group(function () {
-        Route::get('/create', [TenantController::class, 'create'])->name('tenant.create');
-    });
+    //
 });
