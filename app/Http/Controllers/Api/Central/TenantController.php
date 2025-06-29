@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Central;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TenantRequest;
-use App\Models\Tenant;
+use App\Http\Requests\Central\TenantRequest;
+use App\Models\Central\Tenant;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
