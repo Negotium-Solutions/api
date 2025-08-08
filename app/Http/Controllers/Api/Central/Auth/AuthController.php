@@ -27,10 +27,13 @@ class AuthController extends Controller
         $expiresAt = $token->accessToken->expires_at;
 
         return $this->success('Success', 200, [
-            'access_token' => $token->plainTextToken,
-            'token_type' => 'Bearer',
-            'expires_in' => $expiresAt ? now()->diffInSeconds($expiresAt) : null,
-            'exp' => $expiresAt ? $expiresAt->timestamp : null
+            'token' => [
+                'access_token' => $token->plainTextToken,
+                'token_type' => 'Bearer',
+                'expires_in' => $expiresAt ? now()->diffInSeconds($expiresAt) : null,
+                'exp' => $expiresAt ? $expiresAt->timestamp : null
+            ],
+            'user' => $user->only(['id', 'first_name', 'last_name', 'email'])
         ]);
     }
 }
