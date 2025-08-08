@@ -16,24 +16,29 @@ class LogApiResponse
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
+        $_response = $next($request);
 
-        $response_all = $request->all();
+        $payload = $request->all();
         if (str_contains($request->path(), 'api/auth')) {
-            $response_all = '';
+            $payload = '';
+        }
+
+        $response = json_decode($_response->getContent(), true);
+        if (str_contains($request->path(), 'api/auth')) {
+            $response['data'] = null;
         }
 
         $log = [
             'method' => $request->method(),
             'uri' => $request->path(),
             'ip' => $request->getClientIp(),
-            'request' => $response_all,
-            'status' => $response->getStatusCode(),
-            'response' => json_decode($response->getContent(), true),
+            'request' => $payload,
+            'status' => $_response->getStatusCode(),
+            'response' => $response,
         ];
 
         Log::channel('api')->info('API Response Log: ', $log);
 
-        return $response;
+        return $_response;
     }
 }
