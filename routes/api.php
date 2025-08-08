@@ -4,7 +4,6 @@ use App\Http\Controllers\Api\Central\Auth\AuthController;
 use App\Http\Controllers\Api\Central\TenantController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Api\Tenant\DocumentController;
 
 // Central routes - Start
@@ -19,6 +18,11 @@ Route::prefix('tenant')->group(function () {
 });
 // Central routes - End
 
-Route::middleware([InitializeTenancyByPath::class, PreventAccessFromCentralDomains::class, 'auth:sanctum'])->group(function () {
+Route::group([
+    'prefix' => '/{tenant}',
+    'middleware' => [
+        InitializeTenancyByPath::class
+    ],
+], function () {
     Route::apiResource('document', DocumentController::class);
 });

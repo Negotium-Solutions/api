@@ -8,6 +8,7 @@ use App\Models\Central\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -21,8 +22,15 @@ class AuthController extends Controller
             return $this->error('Invalid credentials', 401);
         }
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        $token = $user->createToken('api-token', ['*'], now()->addHours(1));
 
-        return $this->success('Success', 200, ['access_toke' => $token, 'token_type' => 'Bearer']);
+        $expiresAt = $token->accessToken->expires_at;
+
+        return $this->success('Success', 200, [
+            'access_token' => $token->plainTextToken,
+            'token_type' => 'Bearer',
+            'expires_in' => $expiresAt ? now()->diffInSeconds($expiresAt) : null,
+            'exp' => $expiresAt ? $expiresAt->timestamp : null
+        ]);
     }
 }
